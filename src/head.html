@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AFTERMATH: ZERO</title>
+<style>
+/* MUSTASH-PLACEHOLDER-CSS */
+</style>
+</head>
+<body>
+
+<canvas id="menuFx"></canvas>
+<div id="vign"></div>
+
+<!-- ================= LOGIN ================= -->
+<div id="scr-login" class="screen">
+  <div class="login-box">
+    <div class="login-title">AFTERMATH <span class="orange">: ZERO</span></div>
+    <div class="login-sub">PROFIL</div>
+    <div id="login-tabs">
+      <button class="ltab active" data-t="login">CONNEXION</button>
+      <button class="ltab" data-t="signup">CRÉER UN COMPTE</button>
+    </div>
+    <form id="form-login">
+      <div class="field"><label>Pseudo ou e-mail</label><input id="li-id" type="text" autocomplete="username" required></div>
+      <div class="field"><label>Mot de passe</label><input id="li-pass" type="password" autocomplete="current-password" required></div>
+      <button class="btn-orange wide" type="submit">SE CONNECTER</button>
+      <button class="btn-ghost wide" id="btn-guest" type="button">CONTINUER EN INVITÉ</button>
+    </form>
+    <form id="form-signup" hidden>
+      <div class="field"><label>Pseudo</label><input id="su-name" type="text" maxlength="16" required></div>
+      <div class="field"><label>Adresse e-mail</label><input id="su-mail" type="email" required></div>
+      <div class="field"><label>Mot de passe</label><input id="su-pass" type="password" minlength="4" required></div>
+      <div class="field"><label>Confirmer le mot de passe</label><input id="su-pass2" type="password" minlength="4" required></div>
+      <button class="btn-orange wide" type="submit">CRÉER MON COMPTE</button>
+    </form>
+    <div id="login-err"></div>
+  </div>
+</div>
+
+<!-- ================= MAIN MENU ================= -->
+<div id="scr-main" class="screen">
+  <div id="mm-topbar">
+    <div id="mm-title">AFTERMATH<span class="orange"> : ZERO</span></div>
+    <div id="mm-right">
+      <div id="mm-profile" class="pill" title="Profil">
+        <canvas id="mm-avatar" width="26" height="26"></canvas><span id="mm-pseudo">INVITÉ</span>
+      </div>
+      <div class="pill num" id="mm-lvl-pill"><span>NV</span><b id="mm-lvl">1</b></div>
+      <div class="pill clickable" id="mm-bell" title="Notifications">&#128276;<i id="bell-dot" class="dot" hidden></i></div>
+      <div class="pill clickable" id="mm-cog" title="Paramètres">&#9881;</div>
+    </div>
+  </div>
+
+  <div id="mm-menu">
+    <button class="mm-btn primary" data-go="play">JOUER</button>
+    <button class="mm-btn" data-go="multi">MULTIJOUER</button>
+    <button class="mm-btn" data-go="settings">PARAMÈTRES</button>
+    <button class="mm-btn" data-go="progress">PROGRESSION</button>
+    <button class="mm-btn" data-go="shop">BOUTIQUE</button>
+    <button class="mm-btn" data-go="quit">QUITTER LE JEU</button>
+  </div>
+
+  <div id="mm-news">
+    <div class="news-head">ACTUALITÉS</div>
+    <div class="news-item sel">
+      <div class="news-thumb" id="news-thumb"></div>
+      <div><div class="news-t">Bienvenue sur AFTERMATH : ZERO</div>
+      <div class="news-d">Exfiltrez avec votre butin. Ce que vous extrayez est à vous — pour toujours.</div></div>
+    </div>
+    <div class="news-item">
+      <div class="news-thumb mini"></div>
+      <div><div class="news-t">Mise à jour — Zone Nord</div>
+      <div class="news-d">La base militaire enneigée est désormais ouverte aux escouades.</div></div>
+    </div>
+  </div>
+
+  <div id="mm-online">
+    <div class="num-big" id="online-count">12 487</div>
+    <div class="lab">JOUEURS EN LIGNE</div>
+    <div class="status"><i class="ok"></i> En ligne</div>
+  </div>
+</div>
+
+<!-- ================= DEPLOY / MAP ================= -->
+<div id="scr-deploy" class="screen">
+  <div class="sub-head"><button class="btn-back">&#9664;</button><span>CHOISIR LA ZONE DE DÉPLOIEMENT</span></div>
+  <div id="deploy-wrap">
+    <canvas id="island-map" width="760" height="700"></canvas>
+    <div id="deploy-side">
+      <div id="zone-info">
+        <div id="zone-name">SÉLECTIONNEZ UNE ZONE</div>
+        <div id="zone-desc">Cliquez sur la carte pour choisir votre point d'insertion.</div>
+      </div>
+      <div id="squad-note">ESCOUADE : <b id="squad-count">3 opérateurs (vous + 2 IA)</b></div>
+      <button class="btn-orange wide" id="btn-deploy" disabled>DÉPLOIEMENT</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= ARMORY ================= -->
+<div id="scr-armory" class="screen">
+  <div class="sub-head"><button class="btn-back">&#9664;</button><span>ARMURERIE</span></div>
+  <div id="arm-tabs">
+    <button class="atab active" data-cat="ar">FUSILS D'ASSAUT</button>
+    <button class="atab" data-cat="smg">PM</button>
+    <button class="atab" data-cat="shotgun">FUSILS À POMPE</button>
+    <button class="atab" data-cat="lmg">MUNITIONS LOURDES</button>
+    <button class="atab" data-cat="pistol">PISTOLETS</button>
+  </div>
+  <div id="arm-body">
+    <div id="arm-list"></div>
+    <div id="arm-detail"></div>
+  </div>
+</div>
+
+<!-- ================= CLASSES ================= -->
+<div id="scr-classes" class="screen">
+  <div class="sub-head">
+    <button class="btn-back">&#9664;</button><span>MES CLASSES</span>
+    <button class="mm-btn small" id="btn-armory" style="margin-left:auto">ARMURERIE</button>
+  </div>
+  <div id="cls-tabs">
+    <button class="ctab active" data-slot="0">1</button>
+    <button class="ctab" data-slot="1">2</button>
+    <button class="ctab" data-slot="2">3</button>
+    <button class="ctab" data-slot="3">4</button>
+    <button class="ctab" data-slot="4">5</button>
+  </div>
+  <div id="cls-body">
+    <div id="cls-left">
+      <div class="cls-sec">
+        <div class="sec-t">NOM DE LA CLASSE</div>
+        <input id="cls-name" type="text" maxlength="20">
+      </div>
+      <div class="cls-sec">
+        <div class="sec-t">ARME PRINCIPALE</div>
+        <div id="cls-primary" class="equip-grid"></div>
+      </div>
+      <div class="cls-sec">
+        <div class="sec-t">ARME SECONDAIRE</div>
+        <div id="cls-secondary" class="equip-grid"></div>
+      </div>
+      <div class="cls-sec">
+        <div class="sec-t">ÉQUIPEMENT</div>
+        <div id="cls-melee" class="equip-grid"></div>
+      </div>
+    </div>
+    <div id="cls-right">
+      <div class="sec-t" id="cls-att-title">ACCESSOIRES (0/5)</div>
+      <div id="cls-attn"></div>
+      <div id="cls-preview">
+        <div class="sec-t">APERÇU DE L'ARME</div>
+        <canvas id="cls-wview" width="360" height="130"></canvas>
+      </div>
+      <button class="btn-green wide" id="btn-save-class">SAUVEGARDER</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= OPERATOR ================= -->
+<div id="scr-operator" class="screen">
+  <div class="sub-head"><button class="btn-back">&#9664;</button><span>OPÉRATEUR</span></div>
+  <div id="op-body">
+    <canvas id="op-view" width="420" height="460"></canvas>
+    <div id="op-side">
+      <div class="sec-t">TENUE</div>
+      <div id="op-outfits"></div>
+      <div class="op-note">La tenue se voit en jeu : mains, bras et silhouette dans l'hélico.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= SETTINGS ================= -->
+<div id="scr-settings" class="screen">
+  <div class="sub-head"><button class="btn-back">&#9664;</button><span>PARAMÈTRES</span></div>
+  <div id="set-tabs">
+    <button class="stab active" data-t="general">GÉNÉRAL</button>
+    <button class="stab" data-t="gfx">GRAPHISMES</button>
+    <button class="stab" data-t="audio">AUDIO</button>
+    <button class="stab" data-t="controls">COMMANDES</button>
+  </div>
+  <div id="set-body"></div>
+</div>
+
+<!-- ================= PROGRESSION ================= -->
+<div id="scr-progress" class="screen">
+  <div class="sub-head"><button class="btn-back">&#9664;</button><span>PROGRESSION</span></div>
+  <div id="prog-body"></div>
+</div>
+
+<!-- ================= SHOP ================= -->
+<div id="scr-shop" class="screen">
+  <div class="sub-head"><button class="btn-back">&#9664;</button><span>BOUTIQUE</span><span class="cash-lab">&#9679; <b id="shop-cash">0</b></span></div>
+  <div id="shop-body"></div>
+</div>
+
+<!-- ================= STASH ================= -->
+<div id="scr-stash" class="screen">
+  <div class="sub-head"><button class="btn-back">&#9664;</button><span>CAISSE (STASH)</span></div>
+  <div id="stash-body"></div>
+</div>
+
+<!-- ================= NOTIFICATIONS ================= -->
+<div id="notif"></div>
+
+<!-- ================= GAME ================= -->
+<div id="game-wrap" hidden>
+  <canvas id="gc"></canvas>
+  <div id="hud">
+    <div id="hud-topleft">
+      <div id="mm-hud-mini"><canvas id="minimap" width="150" height="150"></canvas></div>
+      <div id="hud-zone">VILLE EN RUINES</div>
+    </div>
+    <div id="hud-topright">
+      <div id="hud-obj">BUTIN : <b id="hud-loot">0</b> &nbsp;&#9679; <b id="hud-cash">0</b></div>
+      <div id="hud-timer">EXFIL : ZONE NON SÉCURISÉE</div>
+    </div>
+    <div id="crossbar"></div>
+    <div id="hitmark" hidden>&#10005;</div>
+    <div id="hud-bottomleft">
+      <div id="hp-bar"><div id="hp-fill"></div></div>
+      <div id="ar-bar"><div id="ar-fill"></div></div>
+      <div id="hud-kit">KIT DE RÉANIMATION : <b id="hud-kit-n">1</b></div>
+    </div>
+    <div id="hud-bottomright">
+      <div id="hud-weap">M4A1</div>
+      <div id="hud-skin"><span id="hud-ammo">30</span><span class="ammo-res">/ 90</span></div>
+    </div>
+    <div id="interact" hidden><span class="key">E</span> <span id="interact-txt">Ramasser</span></div>
+    <div id="revive-progress" hidden><div class="rev-lab">RÉANIMATION...</div><div class="rev-bar"><div id="rev-fill"></div></div></div>
+    <div id="taken-dmg" hidden></div>
+  </div>
+  <div id="crosshair"></div>
+
+  <div id="pause-menu" hidden>
+    <div class="pause-title">PAUSE</div>
+    <button class="mm-btn primary" id="pm-resume">REPRENDRE</button>
+    <button class="mm-btn" id="pm-classes">MES CLASSES</button>
+    <button class="mm-btn" id="pm-settings">PARAMÈTRES</button>
+    <button class="mm-btn" id="pm-quit">ABANDONNER LA PARTIE</button>
+  </div>
+
+  <div id="downed-ui" hidden>
+    <div class="down-title">VOUS ÊTES À TERRE</div>
+    <div class="down-sub" id="down-sub">Un allié peut vous réanimer...</div>
+    <div class="revbar"><div id="bleed-fill"></div></div>
+    <div id="down-kit" hidden><span class="key">E</span> UTILISER LE KIT DE RÉANIMATION</div>
+  </div>
+
+  <div id="death-ui" hidden>
+    <div class="death-title">MISE À MORT</div>
+    <div class="death-sub">Vos armes débloquées restent dans votre Armurerie.</div>
+    <button class="btn-orange" id="btn-death-menu">RETOUR AU MENU</button>
+  </div>
+
+  <div id="extract-ui" hidden>
+    <div class="ex-title">EXFILTRATION</div>
+    <div class="ex-sub">Restez dans la zone</div>
+    <div class="revbar"><div id="ex-fill"></div></div>
+  </div>
+
+  <div id="results" hidden>
+    <div class="res-title" id="res-title">MISSION RÉUSSIE</div>
+    <div id="res-list"></div>
+    <button class="btn-orange" id="btn-res-menu">RETOUR AU MENU</button>
+  </div>
+</div>
+
+</body>
+</html>
